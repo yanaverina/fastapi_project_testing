@@ -1,0 +1,32 @@
+FROM python:3.9-slim
+
+# Установка системных зависимостей
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    python3-dev \
+    libpq-dev \
+    netcat-openbsd && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Копируем сначала requirements для кэширования
+COPY requirements.txt requirements-test.txt .
+COPY setup.py .
+
+# Устанавливаем зависимости
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt -r requirements-test.txt
+
+# Копируем исходный код
+COPY src/ ./src/
+COPY tests/ ./tests/
+
+# Устанавливаем пакет в development mode
+RUN pip install -e .
+
+ENV PYTHONPATH="/app:/app/src" \
+    APP_ENV="testing"
+
+CMD ["pytest", "tests/", "-v"]

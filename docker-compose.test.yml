@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@test_db:5432/test_db
+      REDIS_URL: redis://test_redis:6379/1
+      PYTHONPATH: "/app:/app/src"
+      DB_HOST: "test_db"  # Явно указываем хост
+    volumes:
+      - ./:/app
+    depends_on:
+      test_db:
+        condition: service_healthy
+      test_redis:
+        condition: service_healthy
+
+  test_db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d test_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./src/app/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - test_postgres_data:/var/lib/postgresql/data
+
+  test_redis:
+    image: redis:6-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - test_redis_data:/data
+
+volumes:
+  test_postgres_data:
+  test_redis_data:

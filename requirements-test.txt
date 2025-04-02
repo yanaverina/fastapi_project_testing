@@ -1,0 +1,7 @@
+pytest==7.4.0
+pytest-asyncio==0.21.1
+httpx==0.25.1  # Обновлено для совместимости с jupyterlab
+asyncpg==0.28.0
+locust==2.15.1
+coverage==7.3.0
+pytest-mock==3.11.1
