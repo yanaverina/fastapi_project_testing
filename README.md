@@ -62,38 +62,52 @@ coverage html
 
 1. Соберите и запустите контейнеры:
 ```bash
-docker-compose up -d --build```
+docker-compose up -d --build
+```
 
 2. Запустите тесты:
 
 ```bash
-docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit```
+docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit
+```
 
 
 # 🖥 Ручной запуск тестов
 Запустите тестовую БД:
 
 ```bash
-docker run --name test-db -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test -e POSTGRES_DB=test_db -p 5433:5432 -d postgres:13``
+docker run --name test-db -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test -e POSTGRES_DB=test_db -p 5433:5432 -d postgres:13
+```
 
 Установите зависимости и запустите тесты:
 
 ```bash
 python -m pip install -r requirements.txt
-TEST_DATABASE_URL=postgresql://test:test@localhost:5433/test_db pytest -v tests/```
+TEST_DATABASE_URL=postgresql://test:test@localhost:5433/test_db pytest -v tests/
+```
 
 # 🛑 Остановка контейнеров
 Остановите тестовые контейнеры:
 
 ```bash
-docker-compose -f docker-compose.test.yml down```
+docker-compose -f docker-compose.test.yml down
+```
 
 Удалите тестовую БД:
 
 ```bash
-docker stop test-db && docker rm test-db```
+docker stop test-db && docker rm test-db
+```
 
 Очистите систему:
 
 ```bash
-docker system prune -f```
+docker system prune -f
+```
+
+
+# 📊 Анализ результатов
+
+91% итоговое покрытие тестами
+
+![Screenshot from 2025-04-03 00-42-34](https://github.com/user-attachments/assets/1e3229fe-59e7-4f19-949b-dd377080e507)
